@@ -1,0 +1,4 @@
+# nas role tasks
+- name: Placeholder for nas role
+  debug:
+    msg: "Apply nas configuration here."

@@ -1,0 +1,52 @@
+- hosts: door
+  become: yes
+  vars:
+    door_panel_repo: https://example.com/your/door-panel-app.git
+    door_panel_dir: /opt/door-panel
+  tasks:
+    - name: Ensure dependencies are present
+      apt:
+        name:
+          - python3
+          - python3-pip
+          - git
+        state: present
+        update_cache: yes
+
+    - name: Checkout app repo
+      git:
+        repo: "{{ door_panel_repo }}"
+        dest: "{{ door_panel_dir }}"
+        version: main
+
+    - name: Install Python requirements
+      pip:
+        requirements: "{{ door_panel_dir }}/requirements.txt"
+        executable: pip3
+
+    - name: Install systemd unit
+      copy:
+        dest: /etc/systemd/system/door-panel.service
+        content: |
+          [Unit]
+          Description=Door Panel
+          After=network-online.target
+          Wants=network-online.target
+
+          [Service]
+          Type=simple
+          WorkingDirectory={{ door_panel_dir }}
+          ExecStart=/usr/bin/python3 {{ door_panel_dir }}/main.py
+          Restart=on-failure
+          User=pi
+
+          [Install]
+          WantedBy=multi-user.target
+      notify: Restart door-panel
+
+  handlers:
+    - name: Restart door-panel
+      systemd:
+        name: door-panel
+        state: restarted
+        enabled: yes

@@ -1,0 +1,4 @@
+# door role tasks
+- name: Placeholder for door role
+  debug:
+    msg: "Apply door configuration here."

@@ -1,0 +1,4 @@
+# dev role tasks
+- name: Placeholder for dev role
+  debug:
+    msg: "Apply dev configuration here."

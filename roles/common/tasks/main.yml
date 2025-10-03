@@ -1,0 +1,33 @@
+- name: Set timezone
+  community.general.timezone:
+    name: "{{ timezone }}"
+  when: timezone is defined
+
+- name: Ensure common packages are installed
+  apt:
+    name: "{{ common_packages }}"
+    state: present
+    update_cache: yes
+
+- name: Enable unattended upgrades (Debian/Raspberry Pi OS)
+  apt:
+    name: unattended-upgrades
+    state: present
+  when: unattended_upgrades | default(true)
+
+- name: Ensure unattended upgrades is configured
+  copy:
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+  when: unattended_upgrades | default(true)
+
+- name: Ensure ssh is hardened (disable password auth) - optional
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PasswordAuthentication'
+    line: 'PasswordAuthentication no'
+    create: no
+  notify: Restart ssh
+  when: disable_password_auth | default(false)

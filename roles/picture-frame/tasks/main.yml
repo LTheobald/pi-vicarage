@@ -1,0 +1,4 @@
+# frame role tasks
+- name: Placeholder for frame role
+  debug:
+    msg: "Apply frame configuration here."

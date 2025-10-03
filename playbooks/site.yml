@@ -1,0 +1,25 @@
+# Run everything (common + role-specific) in one go
+- hosts: all
+  become: yes
+  roles:
+    - role: common
+
+- hosts: nas
+  become: yes
+  roles:
+    - role: nas
+
+- hosts: pumpkin
+  become: yes
+  roles:
+    - role: pumpkin
+
+- hosts: office-door
+  become: yes
+  roles:
+    - role: office-door
+
+- hosts: picture-frame
+  become: yes
+  roles:
+    - role: picture-frame
