@@ -69,7 +69,7 @@
     hour:   "{{ entry.sync_schedule.split()[1] }}"
     day:    "{{ entry.sync_schedule.split()[2] }}"
     month:  "{{ entry.sync_schedule.split()[3] }}"
-    weekday:"{{ entry.sync_schedule.split()[4] }}"
+    weekday: "{{ entry.sync_schedule.split()[4] }}"
     job: >-
       /usr/bin/snapraid -c {{ snapraid_conf_dir }}/snapraid_{{ item.name }}.conf sync &&
       /usr/bin/snapraid -c {{ snapraid_conf_dir }}/snapraid_{{ item.name }}.conf scrub

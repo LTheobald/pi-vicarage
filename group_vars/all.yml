@@ -6,6 +6,6 @@ common_packages:
   - git
   - rsync
   - unzip
-  - fastfetch
+  - mosh
 unattended_upgrades: true
 apt_upgrade_type: full
