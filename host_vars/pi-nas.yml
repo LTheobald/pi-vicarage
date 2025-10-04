@@ -1,0 +1,43 @@
+# --- MergerFS variables ---
+mergefs_branches:
+  - mount: "/mnt/parity-hdd"
+    device: "/dev/disk/by-label/parity-hdd"
+    fstype: "ext4"
+    options: "defaults,nofail,noatime"
+  - mount: "/mnt/data1-hdd"
+    device: "/dev/disk/by-label/data1-hdd"
+    fstype: "ext4"
+    options: "defaults,nofail,noatime"
+  - mount: "/mnt/data2-ssd"
+    device: "/dev/disk/by-label/data2-ssd"
+    fstype: "ext4"
+    options: "defaults,nofail,noatime"
+  - mount: "/mnt/data3-ssd"
+    device: "/dev/disk/by-label/data3-ssd"
+    fstype: "ext4"
+    options: "defaults,nofail,noatime"
+
+mergefs_pool_mount: "/mnt/storage"
+mergefs_options: >-
+  defaults,allow_other,use_ino,cache.files=partial,dropcacheonclose=true,
+  category.create=epmfs,minfreespace=50G
+
+# --- SnapRAID variables ---
+snapraid_version: "11.5"                   # version installed on pi-nas
+snapraid_conf_dir: "/etc/snapraid"
+snapraid_arrays:
+  - name: "nas"                            # identifier for this array
+    conf_dir: "{{ snapraid_conf_dir }}"
+    parity_drives:
+      - mount: "/mnt/parity-hdd"
+    data_drives:
+      - { mount: "/mnt/data1-hdd", name: "data1-hdd" }
+      - { mount: "/mnt/data2-ssd", name: "data2-ssd" }
+      - { mount: "/mnt/data3-ssd", name: "data3-ssd" }
+    snapraid_sync:
+      - sync_schedule: "0 3 * * *"        # run sync at 03:00 daily
+        scrub_schedule: "30 3 * * 0"      # run scrub at 03:30 every Sunday
+        delete_threshold: 100             # max deleted files before manual action
+        update_threshold: -1              # disable update threshold
+        scrub_percent: 8                  # percentage of files to scrub
+        scrub_age: 10                     # scrub files older than 10 days

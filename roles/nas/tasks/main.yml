@@ -1,4 +1,83 @@
-# nas role tasks
-- name: Placeholder for nas role
-  debug:
-    msg: "Apply nas configuration here."
+---
+
+- name: Ensure mergerfs and snapraid packages are installed
+  ansible.builtin.apt:
+    name:
+      - mergerfs
+      - snapraid
+    state: present
+    update_cache: yes
+  become: true
+
+# --- Prepare data drives for MergerFS ---
+- name: Create mount points for data disks
+  ansible.builtin.file:
+    path: "{{ item.mount }}"
+    state: directory
+    mode: '0755'
+  loop: "{{ mergefs_branches }}"
+  become: true
+
+- name: Mount data disks and persist them to /etc/fstab
+  ansible.builtin.mount:
+    path: "{{ item.mount }}"
+    src: "{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    opts: "{{ item.options }}"
+    state: mounted
+  loop: "{{ mergefs_branches }}"
+  become: true
+
+# --- Configure MergerFS pool ---
+- name: Ensure mergerfs pool mount point exists
+  ansible.builtin.file:
+    path: "{{ mergefs_pool_mount }}"
+    state: directory
+    mode: '0755'
+  become: true
+
+- name: Mount mergerfs pool and persist in fstab
+  ansible.builtin.mount:
+    path: "{{ mergefs_pool_mount }}"
+    src: "{{ mergefs_branches | map(attribute='mount') | join(':') }}"
+    fstype: "fuse.mergerfs"
+    opts: "{{ mergefs_options }}"
+    state: mounted
+  become: true
+
+# --- Configure SnapRAID ---
+- name: Ensure SnapRAID configuration directory exists
+  ansible.builtin.file:
+    path: "{{ snapraid_conf_dir }}"
+    state: directory
+    mode: '0755'
+  become: true
+
+- name: Deploy snapraid.conf for each array
+  ansible.builtin.template:
+    src: "snapraid.conf.j2"
+    dest: "{{ snapraid_conf_dir }}/snapraid_{{ item.name }}.conf"
+    mode: '0644'
+  loop: "{{ snapraid_arrays }}"
+  become: true
+
+# --- Schedule SnapRAID sync/scrub ---
+- name: Create cron jobs for SnapRAID sync and scrub
+  ansible.builtin.cron:
+    name: "snapraid sync for {{ item.name }}"
+    minute: "{{ entry.sync_schedule.split()[0] }}"
+    hour:   "{{ entry.sync_schedule.split()[1] }}"
+    day:    "{{ entry.sync_schedule.split()[2] }}"
+    month:  "{{ entry.sync_schedule.split()[3] }}"
+    weekday:"{{ entry.sync_schedule.split()[4] }}"
+    job: >-
+      /usr/bin/snapraid -c {{ snapraid_conf_dir }}/snapraid_{{ item.name }}.conf sync &&
+      /usr/bin/snapraid -c {{ snapraid_conf_dir }}/snapraid_{{ item.name }}.conf scrub
+      -p {{ entry.scrub_percent }} -a {{ entry.scrub_age }}
+    user: root
+  loop: "{{ snapraid_arrays }}"
+  loop_control:
+    loop_var: item
+  vars:
+    entry: "{{ item.snapraid_sync[0] }}"
+  become: true
