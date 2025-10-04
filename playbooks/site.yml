@@ -14,12 +14,12 @@
   roles:
     - role: pumpkin
 
-- hosts: office-door
+- hosts: office_door
   become: yes
   roles:
-    - role: office-door
+    - role: office_door
 
-- hosts: picture-frame
+- hosts: picture_frame
   become: yes
   roles:
-    - role: picture-frame
+    - role: picture_frame

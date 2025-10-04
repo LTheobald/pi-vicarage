@@ -6,6 +6,6 @@ common_packages:
   - git
   - rsync
   - unzip
-  - neofetch
+  - fastfetch
 unattended_upgrades: true
 apt_upgrade_type: full
