@@ -1,0 +1,2 @@
+# Managed by Ansible. Manual edits will be overwritten.
+{{ item.compose | default({}) | to_nice_yaml(indent=2) }}

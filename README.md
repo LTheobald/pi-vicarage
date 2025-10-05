@@ -62,3 +62,9 @@ host_vars/ (optional per-host settings)
 ```
 ```
 
+
+## 7) Docker services
+- Docker Engine and Compose V2 are provisioned automatically via the new `docker` role.
+- Compose bundles are rendered on each host under `/opt/containers/<project>/docker-compose.yml`.
+- Add global stacks to `group_vars/all.yml` under `docker_compose_projects`; extend per host via `host_vars/<hostname>.yml` in `docker_compose_projects_host`.
+- Run `ansible-playbook playbooks/site.yml --limit <host>` after editing compose definitions to redeploy containers (`--check` previews file changes only).

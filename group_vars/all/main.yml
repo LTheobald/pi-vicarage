@@ -1,0 +1,26 @@
+timezone: Europe/London
+common_packages:
+  - vim
+  - htop
+  - curl
+  - git
+  - rsync
+  - unzip
+  - mosh
+unattended_upgrades: true
+apt_upgrade_type: full
+
+docker_compose_projects:
+  - name: watchtower
+    compose:
+      version: "3.8"
+      services:
+        watchtower:
+          image: containrrr/watchtower:latest
+          container_name: watchtower
+          restart: unless-stopped
+          volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+          environment:
+            WATCHTOWER_CLEANUP: "true"
+            WATCHTOWER_SCHEDULE: "0 0 4 * * *"
