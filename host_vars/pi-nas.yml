@@ -100,7 +100,7 @@ docker_compose_projects_host:
             - SYS_TIME
             - SYS_NICE
           restart: unless-stopped
-          labels:
+          labels:ex
             - "com.centurylinklabs.watchtower.monitor-only=true"
           volumes:
             - "{{ mergefs_pool_mount }}/docker-volumes/pihole/etc-pihole:/etc/pihole"
