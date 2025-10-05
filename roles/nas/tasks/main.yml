@@ -43,7 +43,6 @@
     fstype: "fuse.mergerfs"
     opts: "{{ mergefs_options }}"
     state: mounted
-  become: true
 
 # --- Configure SnapRAID ---
 - name: Ensure SnapRAID configuration directory exists

@@ -9,18 +9,22 @@
   become: yes
   roles:
     - role: nas
+    - role: docker_compose
 
 - hosts: pumpkin
   become: yes
   roles:
     - role: pumpkin
+    - role: docker_compose
 
 - hosts: office_door
   become: yes
   roles:
     - role: office_door
+    - role: docker_compose
 
 - hosts: picture_frame
   become: yes
   roles:
     - role: picture_frame
+    - role: docker_compose

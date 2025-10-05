@@ -18,9 +18,7 @@ mergefs_branches:
     options: "defaults,nofail,noatime"
 
 mergefs_pool_mount: "/mnt/storage"
-mergefs_options: >-
-  defaults,allow_other,use_ino,cache.files=partial,dropcacheonclose=true,
-  category.create=epmfs,minfreespace=50G
+mergefs_options: "defaults,allow_other,use_ino,cache.files=partial,dropcacheonclose=true,category.create=epmfs,minfreespace=50G"
 
 # --- SnapRAID variables ---
 snapraid_version: "11.5"                   # version installed on pi-nas

@@ -27,18 +27,3 @@ docker_packages:
 # Override or extend per host/group as needed.
 docker_users:
   - pi
-
-# Root directory where compose projects will be rendered
-# Each project gets its own subdirectory: {{ docker_compose_base_dir }}/<name>
-docker_compose_base_dir: /opt/containers
-
-# Global compose definitions applied to all hosts
-# Host-specific additions live in docker_compose_projects_host
-# Example project entries provided in group_vars/ and host_vars/
-docker_compose_projects: []
-
-# Toggle whether the role should run `docker compose up -d`
-docker_manage_compose: true
-
-# Extra CLI arguments when bringing projects up (e.g., "--remove-orphans")
-docker_compose_up_flags: "-d"
