@@ -1,7 +1,26 @@
 ---
+# Packages required to configure the Docker apt repository
+docker_apt_dependencies:
+  - ca-certificates
+  - curl
+  - gnupg
+
+docker_apt_key_url: https://download.docker.com/linux/debian/gpg
+docker_apt_keyring_path: /etc/apt/keyrings/docker.asc
+
+# Map architecture facts to Debian's expected values
+docker_apt_arch_map:
+  x86_64: amd64
+  aarch64: arm64
+  armv7l: armhf
+  armv6l: armhf
+
 # Packages required for Docker Engine and Compose v2 plugin
 docker_packages:
-  - docker.io
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-buildx-plugin
   - docker-compose-plugin
 
 # Users who should be able to run docker without sudo
