@@ -1,0 +1,19 @@
+# ...existing code...
+
+- name: Restart smbd
+  ansible.builtin.service:
+    name: smbd
+    state: restarted
+  listen: "Restart Samba"
+  become: true
+
+- name: Restart nmbd
+  ansible.builtin.service:
+    name: nmbd
+    state: restarted
+  listen: "Restart Samba"
+  ignore_errors: true
+  become: true
+
+# ...existing code...
+

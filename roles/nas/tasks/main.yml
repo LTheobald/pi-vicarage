@@ -80,3 +80,52 @@
   vars:
     entry: "{{ item.snapraid_sync[0] }}"
   become: true
+
+# --- Configure Samba ---
+- name: Install Samba packages
+  ansible.builtin.package:
+    name:
+      - samba
+      - samba-common-bin
+    state: present
+  become: true
+
+- name: Ensure Emulation share directory exists
+  ansible.builtin.file:
+    path: "{{ nas_samba_share_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0775"
+  become: true
+
+- name: Add Samba share to smb.conf
+  ansible.builtin.blockinfile:
+    path: /etc/samba/smb.conf
+    create: true
+    marker: "# {mark} ANSIBLE MANAGED BLOCK: NAS Emulation share"
+    block: |
+      [{{ nas_samba_share_name }}]
+        path = {{ nas_samba_share_path }}
+        browseable = {{ 'yes' if nas_samba_browseable else 'no' }}
+        read only = {{ 'yes' if nas_samba_read_only else 'no' }}
+        guest ok = {{ 'yes' if nas_samba_guest_ok else 'no' }}
+        create mask = 0664
+        directory mask = 0775
+  notify: Restart Samba
+  become: true
+
+- name: Ensure smbd is enabled and running
+  ansible.builtin.service:
+    name: smbd
+    enabled: true
+    state: started
+  become: true
+
+- name: Ensure nmbd is enabled and running (if present)
+  ansible.builtin.service:
+    name: nmbd
+    enabled: true
+    state: started
+  ignore_errors: true
+  become: true

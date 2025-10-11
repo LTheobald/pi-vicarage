@@ -1,0 +1,8 @@
+# ...existing code...
+nas_samba_share_name: "Emulation"
+nas_samba_share_path: "/mnt/storage/Emulation"
+nas_samba_read_only: false
+nas_samba_browseable: true
+nas_samba_guest_ok: true
+# ...existing code...
+
